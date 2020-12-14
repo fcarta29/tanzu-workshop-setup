@@ -1,0 +1,55 @@
+#@ load("@ytt:data", "data")
+
+type:
+  kind: Cluster
+  version: v1alpha
+  package: vmware.tanzu.mc.v1alpha.cluster
+fullName:
+  managementClusterName: #@ data.values.managementClusterName
+  provisionerName: #@ data.values.provisionerName
+  name: #@ data.values.clusterName
+meta:
+  description: ''
+  labels: 
+    env: #@ data.values.env
+    owner: #@ data.values.owner
+spec:
+  clusterGroupName: #@ data.values.clusterGroupName
+  tkgAws:
+    settings:
+      network:
+        cluster:
+          pods:
+          services:
+        provider:
+          subnets:
+            - id: #@ data.values.publicSubnetId
+              isPublic: true
+            - id: #@ data.values.privateSubnetId
+              isPublic: false
+          vpc:
+            id: #@ data.values.vpcId
+      security:
+        sshKey: #@ data.values.sshKeyName
+    distribution:
+      version: #@ data.values.version
+      region: #@ data.values.region
+      provisionerCredentialName: #@ data.values.accountName
+    topology:
+      controlPlane:
+        instanceType: #@ data.values.controlPlaneVmFlavor
+        availabilityZones:
+        - #@ data.values.availabilityZone
+      nodePools:
+      - spec:
+          workerNodeCount: #@ data.values.workerNodeCount
+          tkgAws:
+            instanceType: #@ data.values.workerPlaneVmFlavor
+            subnetId: #@ data.values.privateSubnetId
+            availabilityZone: #@ data.values.availabilityZone
+        info:
+          name: #@ data.values.nodePoolName
+          description: ''
+  
+  
+ 

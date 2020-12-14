@@ -11,7 +11,7 @@ rebuild: clean build
 
 #ADD this back in with project examples are ready -v $$PWD/deploy:/deploy 
 run:
-	docker run --name build-tanzu-workshop-setup -v $$PWD/config/kube.conf:/root/.kube/config -td fcarta29/build-tanzu-workshop-setup:latest
+	docker run --name build-tanzu-workshop-setup -v $$PWD/config/kube.conf:/root/.kube/config -v $$PWD/ytt:/ytt -td fcarta29/build-tanzu-workshop-setup:latest
 	docker exec -it build-tanzu-workshop-setup bash -l
 
 join:
