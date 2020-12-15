@@ -9,7 +9,11 @@ ENV ISTIO_VERSION=1.7.4
 # Install System libraries
 RUN echo "Installing System Libraries" \
   && apt-get update \
-  && apt-get install -y build-essential python3.6 python3-pip python3-dev bash-completion git curl unzip wget findutils jq vim tree docker.io
+  && apt-get install -y build-essential python3.6 python3-pip python3-dev groff bash-completion git curl unzip wget findutils jq vim tree docker.io
+
+# Install AWS CLI
+RUN echo "Installing AWS CLI" \
+    && pip3 install --upgrade awscli
 
 # Install TMC CLI
 COPY bin/tmc .
@@ -69,6 +73,20 @@ RUN echo "Installing Istioctl" \
   && cd istio-${ISTIO_VERSION} \
   && cp $PWD/bin/istioctl /usr/local/bin/istioctl \
   && istioctl version
+  
+# Install CF CLI 7
+RUN echo "Installing CF CLI 7" \
+  && wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | apt-key add - \
+  && echo "deb https://packages.cloudfoundry.org/debian stable main" | tee /etc/apt/sources.list.d/cloudfoundry-cli.list \
+  && apt-get update \
+  && apt-get install cf7-cli 
+
+# Install Bosh 
+RUN echo "Installing Bosh" \
+  && wget -q https://github.com/cloudfoundry/bosh-cli/releases/download/v6.4.1/bosh-cli-6.4.1-linux-amd64 \
+  && mv bosh-cli-6.4.1-linux-amd64 bosh \
+  && chmod +x bosh \
+  && mv bosh /usr/local/bin
 
 # Create Aliases
 RUN echo "alias k=kubectl" > /root/.profile
